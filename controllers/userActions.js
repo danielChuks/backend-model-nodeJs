@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const User = require('../models/userModels');
 const bcrypt = require('bcrypt');
 
 
@@ -19,7 +19,6 @@ const getUsers = async(req, res) => {
  * @param {*} res //we  respond the user if the id passed in by the user matches the id in the database.
  */
 const getUsersById = async(req, res) => {
-    try {
         const { id } = req.params
         let user = await User.find({_id : id});
             if(id){
@@ -27,9 +26,6 @@ const getUsersById = async(req, res) => {
     }
              else{
                 res.send('No user exist');
-    } 
-    } catch (err) {
-        console.error(err.message)
     } 
 }
 /**
@@ -40,7 +36,6 @@ const getUsersById = async(req, res) => {
  */
 const postUsers = async (req, res) =>{
     const { name, email, password} = req.body
-    try {
         let user = await User.findOne({email: email})
         if(user) return res.status(400).send("User with these email already exist")// stop here if user exist
 
@@ -51,9 +46,6 @@ const postUsers = async (req, res) =>{
         await user.save()
 
         res.send("user created")
-    } catch (err) {
-        console.error(err.message);
-    }
 }
 /**
  * 
@@ -92,8 +84,7 @@ const putUsers = async(req, res) =>{
  * @returns we return "incorrect form submission" if the user does not fill in any information in the email n password filled
  */
 const signInUsers = async(req, res) => {
-    const {email, password } = req.body
-    try {
+    const {email, password } = req.body;
         if(!email || !password){
             return res.status(400).json('Incorrect form submission')
          }
@@ -105,9 +96,6 @@ const signInUsers = async(req, res) => {
             else{
                 res.send(user)
             }
-        } catch (err) {
-             console.error(err.message)
-        }
 }
 
 

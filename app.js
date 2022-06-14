@@ -13,7 +13,8 @@ const PORT = process.env.PORT || 5700;
 
 //Importing the routes .....
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const usersRouter = require('./routes/usersRoutes');
+const adminRouter = require('./routes/adminRoutes');
 
 
 const app = express();
@@ -26,8 +27,9 @@ app.use(cookieParser());
 
 
 
-app.use('/', indexRouter)
-app.use('/users', usersRouter)
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/admin', adminRouter);
 
 
 app.listen(PORT, () => {
