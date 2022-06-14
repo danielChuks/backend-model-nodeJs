@@ -45,7 +45,7 @@ const postUsers = async (req, res) =>{
         user.password = await bcrypt.hash(user.password, salt)//hash the password
         await user.save()
 
-        res.send("user created")
+        res.send("user created");
 }
 /**
  * 

@@ -19,16 +19,37 @@ const postAdmins = async (req, res) => {
         admin.password = await bcrypt.hash(admin.password, salt);
         await admin.save();
 
-        res.send("Admin added");
-
-
+        res.send("Admin added")
 }
 
 
+const getAdminById = async (req, res) => {
+    const { id } = req.params;
+    let admin = await Admin.find({id});
+        if(id){
+            res.send(admin).status(200);
+        }
+        else res.send("No record found");
+            
+}
 
+
+const deleteAdmin = async (req, res) => {
+    const { id } = req.params;
+    await Admin.deleteOne({ id })
+        if(id){
+            res,send("Admin deleted successfully");
+        }
+
+        else {
+            res.send("invalide Admin");
+        }
+}
 
 
 module.exports = {
     getAdmins,
     postAdmins,
+    getAdminById,
+    deleteAdmin,
 }
