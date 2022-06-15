@@ -38,7 +38,7 @@ const deleteAdmin = async (req, res) => {
     const { id } = req.params;
     await Admin.deleteOne({ id })
         if(id){
-            res,send("Admin deleted successfully");
+            res.send("Admin deleted successfully");
         }
 
         else {
@@ -47,9 +47,37 @@ const deleteAdmin = async (req, res) => {
 }
 
 
+const putAdmin = async (req, res) => {
+    const { id } = req.params;
+    let admin = await Admin.findByIdAndUpdate({id : _id})
+        if(admin.id === id){
+            res.status(200).json("Updated succesfully ")
+        }
+        else{
+            res.send("Invaid user !")
+        }
+}
+
+const signInAdmins = async(req, res) => {
+    const {email, password} = req.body;
+        if(!email || !password){
+            return res.status(400).send("Incorrect Form Submission");
+        }
+        let admin = await Admin.findOne({email: email})
+        const match = await bcrypt.compare(password, admin.password)
+            if(!match){
+                res.send("invalid Admin login")
+            }
+            else {
+                res.send(admin)
+            }
+}
+
 module.exports = {
     getAdmins,
     postAdmins,
     getAdminById,
     deleteAdmin,
+    putAdmin,
+    signInAdmins,
 }

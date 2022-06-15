@@ -20,7 +20,7 @@ const adminRouter = require('./routes/adminRoutes');
 const app = express();
 app.use(express.json());
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(cookieParser());
 
@@ -33,7 +33,7 @@ app.use('/admin', adminRouter);
 
 
 app.listen(PORT, () => {
-  console.log(`app is listening on port ${PORT}`)
+  console.log(`app is listening on port ${PORT}`);
 })
 
 
