@@ -4,7 +4,7 @@ const controllerAdmins = require('../controllers/adminActions')
 
 
 router.get('/', controllerAdmins.getAdmins);
-router.post('/', controllerAdmins.postAdmins);
+router.post('/register', controllerAdmins.registerAdmins);
 router.get('/:id', controllerAdmins.getAdminById);
 router.delete('/:id', controllerAdmins.deleteAdmin);
 router.put('/:id', controllerAdmins.putAdmin);
