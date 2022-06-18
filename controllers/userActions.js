@@ -1,5 +1,7 @@
 const User = require('../models/userModels');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const asyncHandler = require('express-async-handler');
 
 
 //user route controller functions
@@ -18,7 +20,7 @@ const getUsers = async(req, res) => {
  * @param {*} req //this route get users by id ..i.e getting one user instead of getting all users 
  * @param {*} res //we  respond the user if the id passed in by the user matches the id in the database.
  */
-const getUsersById = async(req, res) => {
+const getUsersById = asyncHandler(async(req, res) => {
         const { id } = req.params
         let user = await User.find({_id : id});
             if(id){
@@ -27,14 +29,14 @@ const getUsersById = async(req, res) => {
              else{
                 res.send('No user exist');
     } 
-}
+})
 /**
  * 
  * @param {*} req this function enable the clients make request to signup and  the function first check if the user already exist if it does it will return this user already exist.
  * @param {*} res then respond depending if the user exist will respond "user with  email already exist" 
  * @returns else it will create a new user and responed "User created" and then save....
  */
-const postUsers = async (req, res) =>{
+const registerUsers =  asyncHandler(async(req, res) =>{
     const { name, email, password} = req.body
         let user = await User.findOne({email: email})
         if(user) return res.status(400).send("User with these email already exist")// stop here if user exist
@@ -46,13 +48,13 @@ const postUsers = async (req, res) =>{
         await user.save()
 
         res.send("user created");
-}
+});
 /**
  * 
  * @param {*} req in this function, we request user by "id" and perform a delete action 
  * @param {*} res we respond the status of the delete action to the user if ther exsist a user.
  */
-const deleteUsers = async(req, res) => {
+const deleteUsers = asyncHandler(async(req, res) => {
     const { id } = req.params
     await User.deleteOne({id: id})
     if(id){
@@ -61,14 +63,14 @@ const deleteUsers = async(req, res) => {
     else{
         res.send("No user to delete")
     }
-}
+});
 
 /**
  * 
  * @param {*} req we request a user for update 
  * @param {*} res respond the status of the update 
  */
-const putUsers = async(req, res) =>{
+const putUsers = asyncHandler(async(req, res) =>{
     const { id } = req.params
     let user = await User.findByIdAndUpdate({id: id})
     if(user.id === id){
@@ -76,14 +78,14 @@ const putUsers = async(req, res) =>{
     }else{
         res.send("invailed user")
     }
-}
+});
 /**
  * 
  * @param {*} req This will take the request of password and email.
  * @param {*} res this respond to the user an invalid user if the email and password provided by the user is invalid and return users information if email and password in correct 
  * @returns we return "incorrect form submission" if the user does not fill in any information in the email n password filled
  */
-const signInUsers = async(req, res) => {
+const signInUsers = asyncHandler(async(req, res) => {
     const {email, password } = req.body;
         if(!email || !password){
             return res.status(400).json('Incorrect form submission')
@@ -96,12 +98,12 @@ const signInUsers = async(req, res) => {
             else{
                 res.send(user)
             }
-}
+});
 
 
 module.exports = {
     getUsers,
-    postUsers,
+    registerUsers,
     deleteUsers, 
     signInUsers,
     putUsers,

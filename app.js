@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 
 //database connection...
-const con = require('./db/connecton')
+const con = require('./db/connecton');
 
 //port declaration
 require('dotenv').config()
