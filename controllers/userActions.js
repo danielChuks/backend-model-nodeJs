@@ -42,16 +42,37 @@ const registerUsers =  asyncHandler(async(req, res) =>{
             res.status(400)
             throw new Error("Please fill all form fields");
         };
-        let user = await User.findOne({email: email})
-        if(user) return res.status(400).send("User with these email already exist")// stop here if user exist
+        
+        //In this line of code we check to know if the admin already exist
+        const userExist = await User.findOne({email});
+            if(userExist){
+                res.status(400)
+                throw new Error("User alreay exist")
+            };
+        
+        //hashing password........................
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
 
         //creating as new user...
-        user = new User({ name, email, password});
-        const salt = await bcrypt.genSalt(10)//create the hash
-        user.password = await bcrypt.hash(user.password, salt)//hash the password
+        const user =  await User({ 
+            name, 
+            email, 
+            password: hashedPassword
+        });
+    
+        if(user){
+            res.status(200).json({
+                _id: name.id,
+                name: user.name,
+                email: user.email,
+            })   
+        }else{
+            res.status(400)
+            throw new Error("Invalid submition");
+        }
         await user.save();
-
-        res.json({message: "user created"});
 });
 /**
  * 
