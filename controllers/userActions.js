@@ -29,7 +29,7 @@ const getUsersById = asyncHandler(async(req, res) => {
              else{
                 res.send('No user exist');
     } 
-})
+});
 /**
  * 
  * @param {*} req this function enable the clients make request to signup and  the function first check if the user already exist if it does it will return this user already exist.
@@ -37,17 +37,21 @@ const getUsersById = asyncHandler(async(req, res) => {
  * @returns else it will create a new user and responed "User created" and then save....
  */
 const registerUsers =  asyncHandler(async(req, res) =>{
-    const { name, email, password} = req.body
+    const { name, email, password} = req.body;
+        if(!name || !email || !password){
+            res.status(400)
+            throw new Error("Please fill all form fields");
+        };
         let user = await User.findOne({email: email})
         if(user) return res.status(400).send("User with these email already exist")// stop here if user exist
 
         //creating as new user...
-        user = new User( { name, email, password})
+        user = new User({ name, email, password});
         const salt = await bcrypt.genSalt(10)//create the hash
         user.password = await bcrypt.hash(user.password, salt)//hash the password
-        await user.save()
+        await user.save();
 
-        res.send("user created");
+        res.json({message: "user created"});
 });
 /**
  * 
@@ -70,7 +74,7 @@ const deleteUsers = asyncHandler(async(req, res) => {
  * @param {*} req we request a user for update 
  * @param {*} res respond the status of the update 
  */
-const putUsers = asyncHandler(async(req, res) =>{
+const updateUsers = asyncHandler(async(req, res) =>{
     const { id } = req.params
     let user = await User.findByIdAndUpdate({id: id})
     if(user.id === id){
@@ -106,6 +110,6 @@ module.exports = {
     registerUsers,
     deleteUsers, 
     signInUsers,
-    putUsers,
+    updateUsers,
     getUsersById
 }
