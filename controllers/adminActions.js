@@ -92,13 +92,16 @@ const signInAdmins = asyncHandler(async(req, res) => {
         if(!email || !password){
             return res.status(400).send("Incorrect Form Submission");
         }
-        let admin = await Admin.findOne({email: email})
-        const match = await bcrypt.compare(password, admin.password)
-            if(!match){
-                res.send("invalid Admin login")
-            }
+        const admin = await Admin.findOne({email})
+        if(admin && (await bcrypt.compare(password, admin.password))){
+            res.json({
+                _id: admin.id,
+                email: admin.email,
+            });
+        }
             else {
-                res.send(admin);
+                res.status(400);
+                throw new Error("Invalid credientials");
             }
 });
 
