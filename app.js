@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5700;
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/usersRoutes');
 const adminRouter = require('./routes/adminRoutes');
-const products = require("./routes/products")
+const productsRoutes = require("./routes/productsRoutes");
 
 
 const app = express();
@@ -31,7 +31,7 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
-app.use('/products', products);
+app.use('/products', productsRoutes);
 
 
 app.listen(PORT, () => {

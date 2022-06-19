@@ -10,10 +10,10 @@ const asyncHandler = require('express-async-handler');
  * @param {*} req this function req, reqest the all the users listed 
  * @param {*} res we respond to the clients all the users from th*
  */
-const getUsers = async(req, res) => {
+const getUsers = asyncHandler(async(req, res) => {
     const user = await User.find({User});
-    await res.json(user).status(200);
-}
+    res.json(user).status(200);
+})
 
 /**
  * 
