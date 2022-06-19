@@ -101,7 +101,7 @@ const updateUsers = asyncHandler(async(req, res) =>{
     if(user.id === id){
         res.send("deleted successfully")
     }else{
-        res.send("invailed user")
+        res.send("invailed user");
     }
 });
 /**
@@ -118,10 +118,10 @@ const signInUsers = asyncHandler(async(req, res) => {
          let user = await User.findOne({email: email})
          const match = await bcrypt.compare(password, user.password) 
             if(!match){
-                res.send("invalid User")
+                res.send("invalid User");
             }
             else{
-                res.send(user)
+                res.send(user);
             }
 });
 
@@ -133,4 +133,4 @@ module.exports = {
     signInUsers,
     updateUsers,
     getUsersById
-}
+};
