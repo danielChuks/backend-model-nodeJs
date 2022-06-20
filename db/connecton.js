@@ -1,18 +1,17 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const path = require('path');
-dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
-// connecting to mongodb  atlas or mongodb on my local machine.....
-const uri = process.env.DBCONNECTION || 'mongodb://localhost/controllers'; 
 
-mongoose.connect(uri, { useNewUrlParser: true });
-const con = mongoose.connection;
+const con = async () => {
+  try {
+    const connectDB = await mongoose.connect(process.env.DBCONNECTION);
+    console.log(`Database connected: ${connectDB.connection.host}`.cyan.underline);
+  } 
+  catch (error) {
+      console.log(error) 
+      process.exit(1);
+  }
+}
 
-con.on('open', () => {
-  console.log('data base is connected');
-});
-
-module.exports = con;
+module.exports = con ;
 
 

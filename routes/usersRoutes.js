@@ -1,15 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
-const controllerUsers = require('../controllers/userActions');
+const {getUsers,
+       registerUsers,
+       deleteUsers,
+       updateUsers,
+       getUsersById,
+       signInUsers
+        } = require('../controllers/userActions')
 
 /* Working with the route. */
-router.get('/', controllerUsers.getUsers);
-router.post('/register', controllerUsers.registerUsers);
-router.delete('/:id', controllerUsers.deleteUsers);
-router.put('/:id', controllerUsers.updateUsers);
-router.get('/:id', controllerUsers.getUsersById);
-router.post('/signin', controllerUsers.signInUsers);
+router.get('/', getUsers);
+router.post('/register', registerUsers);
+router.post('/signin', signInUsers);
+router.route('/:id').delete(deleteUsers).put(updateUsers).get(getUsersById);
+
+
 
 
 

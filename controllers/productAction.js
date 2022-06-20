@@ -5,8 +5,8 @@ const Product = require('../models/productsmodels');
 // @routes GET /products
 // @access public
 const getProduct = asyncHandler(async(req, res) => {
-    const product = await Product.find({Product})
-    res.json(product).status(200)
+    const product = await Product.find({Product});
+    res.json(product).status(200);
 });
 
 // @desc  Update products
@@ -28,17 +28,17 @@ const updateProduct = asyncHandler(async(req, res) => {
 const postProduct = asyncHandler(async(req, res) => {
     res.status(200).json({
         message: "post product"
-    })
+    });
 });
 
 // @desc  Delete products
 // @routes DELETE /products/:id
 // @access public
-const deleteProduct = asyncHandler(async(req, res) =>{
+const deleteProduct = asyncHandler(async(req, res) => {
     res.status(200).json({
         message: "deleted successfully"
-    })
-})
+    });
+});
 
 
 module.exports = {
@@ -46,4 +46,4 @@ module.exports = {
     updateProduct,
     postProduct,
     deleteProduct,
-}
+};

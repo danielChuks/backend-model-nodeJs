@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const productSchema = mongoose.Schema(
-    
+
     {
         //we are linking users to products to know which user picks which products
         user: {
