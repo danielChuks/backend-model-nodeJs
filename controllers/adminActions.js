@@ -76,7 +76,7 @@ const deleteAdmin = asyncHandler(async(req, res) => {
 });
 
 
-const putAdmin = asyncHandler(async(req, res) => {
+const updateAdmin = asyncHandler(async(req, res) => {
     const { id } = req.params;
     let admin = await Admin.findByIdAndUpdate({id : _id})
         if(admin.id === id){
@@ -110,6 +110,6 @@ module.exports = {
     registerAdmins,
     getAdminById,
     deleteAdmin,
-    putAdmin,
+    updateAdmin,
     signInAdmins,
 }

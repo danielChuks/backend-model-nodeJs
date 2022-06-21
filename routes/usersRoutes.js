@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const {getUsers,
+const {
+       getUsers,
        registerUsers,
        deleteUsers,
        updateUsers,
        getUsersById,
-       signInUsers
-        } = require('../controllers/userActions')
+       signInUsers } = require('../controllers/userActions')
 
 /* Working with the route. */
 router.get('/', getUsers);

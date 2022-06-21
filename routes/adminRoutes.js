@@ -1,14 +1,12 @@
 const express = require('express');
-const router = express.Router()
-const controllerAdmins = require('../controllers/adminActions')
+const router = express.Router();
 
+const {getAdmins, getAdminById, registerAdmins, deleteAdmin, updateAdmin, signInAdmins} = require('../controllers/adminActions');
 
-router.get('/', controllerAdmins.getAdmins);
-router.post('/register', controllerAdmins.registerAdmins);
-router.get('/:id', controllerAdmins.getAdminById);
-router.delete('/:id', controllerAdmins.deleteAdmin);
-router.put('/:id', controllerAdmins.putAdmin);
-router.post('/signin', controllerAdmins.signInAdmins)
+router.get('/', getAdmins);
+router.route('/:id').get(getAdminById).delete(deleteAdmin).put(updateAdmin);
+router.post('/register', registerAdmins);
+router.post('/signin', signInAdmins);
 
 
 
