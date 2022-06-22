@@ -15,15 +15,13 @@ const productSchema = mongoose.Schema(
             ref: "Admin"
         },
 
-        product_name: {type: String, required: true, minlength: 3, maxlength: 200},
-        product_price: {type: Number, required: true},
-        product_quantity: {type: Number, required: true}
+        text: {type: String, required: true, minlength: 3, maxlength: 200},
     },
     {
         timestamps: true
     }
 )
-
+ 
 
 
 module.exports = mongoose.model("Product", productSchema);

@@ -52,7 +52,6 @@ const registerAdmins = asyncHandler(async(req, res) => {
 });
 
         //we are getting a particular admin
-
 const getAdminById = asyncHandler(async(req, res) => {
     const { id } = req.params;
     let admin = await Admin.find({id});

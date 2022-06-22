@@ -5,7 +5,7 @@ const Product = require('../models/productsmodels');
 // @routes GET /products
 // @access public
 const getProduct = asyncHandler(async(req, res) => {
-    const product = await Product.find({Product});
+    const product = await Product.find();
     res.json(product).status(200);
 });
 
@@ -26,9 +26,14 @@ const updateProduct = asyncHandler(async(req, res) => {
 // @routes POST /products
 // @access public
 const postProduct = asyncHandler(async(req, res) => {
-    res.status(200).json({
-        message: "post product"
-    });
+    if(!req.body.text){
+        res.status(400)
+        throw new Error('Please select a product');
+    }
+    const product = await Product.create({
+        text: req.body.text
+    })
+    res.status(200).json(product)
 });
 
 // @desc  Delete products
