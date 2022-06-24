@@ -26,7 +26,7 @@ const getUsersById = asyncHandler(async(req, res) => {
             if(id){
                 res.send(user).status(200);
     }
-             else{
+            else{
                 res.send('No user exist');
     } 
 });
@@ -54,26 +54,51 @@ const registerUsers =  asyncHandler(async(req, res) =>{
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-
-        //creating as new user...
-        const user =  await User({ 
+        //creating as new user... with the value each user should have or submit.....
+        const newUser = new User({ 
             name, 
             email, 
             password: hashedPassword
         });
-    
-        if(user){
-            res.status(200).json({
-                _id: name.id,
-                name: user.name,
-                email: user.email,
-            })   
-        }else{
-            res.status(400)
-            throw new Error("Invalid submition");
-        }
-        await user.save();
+        await newUser.save();
+                res.status(201).json({
+                _id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                token: generateToken(newUser._id),
+         })     
 });
+
+/**
+ * 
+ * @param {*} req This will take the request of password and email.
+ * @param {*} res this respond to the user an invalid user if the email and password provided by the user is invalid and return users information if email and password in correct 
+ * @returns we return "incorrect form submission" if the user does not fill in any information in the email n password filled
+ */
+ const signInUsers = asyncHandler(async(req, res) => {
+    const {email, password } = req.body;
+        if(!email || !password){
+            return res.status(400).json('Incorrect form submission');
+         }
+         const user = await User.findOne({email});
+            if(!user){
+                res.status(404)
+                throw new Error(" Not found !");
+         }
+
+        let validPassword =  await bcrypt.compare(password, user.password)
+            if(!validPassword){
+                res.status(400)
+                throw new Error(" failed ");
+            }
+            res.json({
+                _id: user.id, 
+                email: user.email,
+                token: generateToken(user._id)
+             });
+
+});
+
 /**
  * 
  * @param {*} req in this function, we request user by "id" and perform a delete action 
@@ -82,11 +107,11 @@ const registerUsers =  asyncHandler(async(req, res) =>{
 const deleteUsers = asyncHandler(async(req, res) => {
     const { id } = req.params
     await User.deleteOne({id: id})
-    if(id){
-        res.send("Deleted successfully")
+        if(id){
+            res.send("Deleted successfully");
     }
-    else{
-        res.send("No user to delete")
+        else{
+            res.send("No user to delete");
     }
 });
 
@@ -96,35 +121,30 @@ const deleteUsers = asyncHandler(async(req, res) => {
  * @param {*} res respond the status of the update 
  */
 const updateUsers = asyncHandler(async(req, res) =>{
-    const { id } = req.params
-    let user = await User.findByIdAndUpdate({id: id})
-    if(user.id === id){
-        res.send("deleted successfully")
-    }else{
-        res.send("invailed user");
+    const { id } = req.params;
+    const {name, email, password} = req.body;
+    const user = await User.findById({_id : id })
+        if(!user){
+            res.status(400);
+            throw new Error(" No User Found ! ")
     }
-});
-/**
- * 
- * @param {*} req This will take the request of password and email.
- * @param {*} res this respond to the user an invalid user if the email and password provided by the user is invalid and return users information if email and password in correct 
- * @returns we return "incorrect form submission" if the user does not fill in any information in the email n password filled
- */
-const signInUsers = asyncHandler(async(req, res) => {
-    const {email, password } = req.body;
-        if(!email || !password){
-            return res.status(400).json('Incorrect form submission')
-         }
-         let user = await User.findOne({email: email})
-         const match = await bcrypt.compare(password, user.password) 
-            if(!match){
-                res.send("invalid User");
-            }
-            else{
-                res.send(user);
-            }
+            user.name = name || user.name;
+            user.email = email || user.email;
+            user.password = password || user.password;
+            
+            await user.save()
+            res.send(user)
+
+   
+    
 });
 
+//Jwt token generator..........
+const generateToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    });
+};
 
 module.exports = {
     getUsers,

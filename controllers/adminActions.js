@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const Admin = require('../models/adminModels');
 const jwt = require("jsonwebtoken");
 const asyncHandler = require('express-async-handler');
+const userModels = require('../models/userModels');
+
 
 const getAdmins = async (req, res) => {
     const admin = await Admin.find({Admin});
@@ -9,6 +11,18 @@ const getAdmins = async (req, res) => {
 }
 
 
+//we are getting a particular admin.................................
+const getAdminById = asyncHandler(async(req, res) => {
+    const { id } = req.params;
+    let admin = await Admin.find({_id : id});
+        if(id){
+            res.send(admin).status(200);
+            }
+            else res.send("No record found");  
+        });
+/**
+ * Admin registration function...................................
+ */
 const registerAdmins = asyncHandler(async(req, res) => {
     const { firstName, lastName, email, password, birthday} = req.body;
         if(!firstName || !lastName || !email || !password){
@@ -16,52 +30,59 @@ const registerAdmins = asyncHandler(async(req, res) => {
             throw new Error("Please fill all fields");
         };
 
-        //Checking if the admin with that email already exist
+ //Checking if the admin with that email already exist
         const adminExist = await Admin.findOne({email});
             if(adminExist){
                 res.status(400)
                 throw new Error("Admin with this email already exist");
             }
-        //hashing of the password.
+//hashing of the password.
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        //Here we are creating a new admin in absence of the admin email already registered and including the model.
-        const admin = await Admin({
+ //Here we are creating a new admin in absence of the admin email already registered and including the model.
+        const newAdmin = new Admin({
             firstName,
             lastName,
             email,
             password: hashedPassword,
             birthday
         });
-
-        //here we are checking to know if the admin was created successfully. and then we are returning the value back in json
-        if(admin){
-            res.status(200).json({
-                _id: admin.id,
-                firstName: admin.firstName,
-                lastName: admin.lastName,
-                email: admin.email,
-                birthday: admin.birthday,
+        await newAdmin.save();
+        res.status(200).json({
+            _id: newAdmin.id,
+            firstName: newAdmin.firstName,
+            lastName: newAdmin.lastName,
+            email: newAdmin.email,
+            birthday: newAdmin.birthday,
             })
-        }else{
+        res.status(400)
+        throw new Error("Invalid submition");
+});
+
+//login fuction ............................................
+const signInAdmins = asyncHandler(async(req, res) => {
+    const {email, password} = req.body;
+        if(!email || !password){
+            return res.status(400).send("Incorrect Form Submission");
+        }
+    const admin = await Admin.findOne({email})
+        if(!admin){
+            res.status(404);  
+            throw new Error("Admin Not Found !")          
+         }
+
+    const validPassword = await bcrypt.compare(password, admin.password);
+        if(!validPassword){
             res.status(400)
-            throw new Error("Invalid submition");
+            throw new Error(" Invalid Password !");
         }
-        await admin.save();
+            res.json({
+            _id: admin.id,
+            email: admin.email,
+            token: generateToken
+        })
 });
-
-        //we are getting a particular admin
-const getAdminById = asyncHandler(async(req, res) => {
-    const { id } = req.params;
-    let admin = await Admin.find({id});
-        if(id){
-            res.send(admin).status(200);
-        }
-        else res.send("No record found");
-
-});
-
 
 const deleteAdmin = asyncHandler(async(req, res) => {
     const { id } = req.params;
@@ -74,11 +95,10 @@ const deleteAdmin = asyncHandler(async(req, res) => {
         }
 });
 
-
 const updateAdmin = asyncHandler(async(req, res) => {
     const { id } = req.params;
-    let admin = await Admin.findByIdAndUpdate({id : _id})
-        if(admin.id === id){
+    let admin = await Admin.findByIdAndUpdate({id})
+        if(admin.id === _id){
             res.status(200).json("Updated succesfully ")
         }
         else{
@@ -86,23 +106,13 @@ const updateAdmin = asyncHandler(async(req, res) => {
         }
 });
 
-const signInAdmins = asyncHandler(async(req, res) => {
-    const {email, password} = req.body;
-        if(!email || !password){
-            return res.status(400).send("Incorrect Form Submission");
-        }
-        const admin = await Admin.findOne({email})
-        if(admin && (await bcrypt.compare(password, admin.password))){
-            res.json({
-                _id: admin.id,
-                email: admin.email,
-            });
-        }
-            else {
-                res.status(400);
-                throw new Error("Invalid credientials");
-            }
-});
+//JWT token ..............................................
+const generateToken = (id) =>{
+    return jwt.sign({id}, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    })
+ };
+
 
 module.exports = {
     getAdmins,

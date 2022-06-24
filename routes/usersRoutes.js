@@ -11,10 +11,11 @@ const {
 
 /* Working with the route. */
 router.get('/', getUsers);
+router.get('/:id', getUsersById);
+router.delete('/:id', deleteUsers);
 router.post('/register', registerUsers);
-router.post('/signin', signInUsers);
-router.route('/:id').delete(deleteUsers).put(updateUsers).get(getUsersById);
-
+router.post('/login', signInUsers);
+router.put('/:id', updateUsers);
 
 
 
