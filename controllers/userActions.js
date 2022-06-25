@@ -125,9 +125,9 @@ const updateUsers = asyncHandler(async(req, res) =>{
     const {name, email, password} = req.body;
     const user = await User.findById({_id : id })
         if(!user){
-            res.status(400);
+            res.status(404);
             throw new Error(" No User Found ! ")
-    }
+     }
             user.name = name || user.name;
             user.email = email || user.email;
             user.password = password || user.password;

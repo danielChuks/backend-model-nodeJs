@@ -97,13 +97,18 @@ const deleteAdmin = asyncHandler(async(req, res) => {
 
 const updateAdmin = asyncHandler(async(req, res) => {
     const { id } = req.params;
-    let admin = await Admin.findByIdAndUpdate({id})
-        if(admin.id === _id){
-            res.status(200).json("Updated succesfully ")
+    const {firstName, lastName, email, birthday } = req.body;
+    const admin = await Admin.findById({_id : id })
+        if(!admin){
+            res.status(404)
+            throw new Error("No Admin Found !")
         }
-        else{
-            res.send("Invaid user !");
-        };
+        admin.firstName = firstName || admin.firstName;
+        admin.lastName = lastName || admin.lastName;
+        admin.email = email || admin.email;
+        admin.birthday = birthday || admin.birthday;
+        await admin.save();
+        res.send(admin);
 });
 
 //JWT token ..............................................

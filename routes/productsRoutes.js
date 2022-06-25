@@ -6,12 +6,14 @@ const { getProduct,
         updateProduct,
         postProduct,
         deleteProduct } = require("../controllers/productAction");
+
+const { protect } = require('../middleWare/authorization');
       
 
-router.route('/', getProduct);
-router.post('/', postProduct);
-router.get('/:id', deleteProduct);
-router.put('/:id', updateProduct);
+router.get('/', protect, getProduct);
+router.post('/', protect, postProduct);
+router.get('/:id', protect, deleteProduct);
+router.put('/:id', protect, updateProduct);
 
 
 
