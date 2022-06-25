@@ -13,7 +13,7 @@ const asyncHandler = require('express-async-handler');
 const getUsers = asyncHandler(async(req, res) => {
     const user = await User.find({User});
     res.json(user).status(200);
-})
+});
 
 /**
  * 
