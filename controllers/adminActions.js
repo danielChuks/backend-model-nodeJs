@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const Admin = require('../models/adminModels');
 const jwt = require("jsonwebtoken");
 const asyncHandler = require('express-async-handler');
-const userModels = require('../models/userModels');
 
 
 const getAdmins = async (req, res) => {
@@ -55,6 +54,7 @@ const registerAdmins = asyncHandler(async(req, res) => {
             lastName: newAdmin.lastName,
             email: newAdmin.email,
             birthday: newAdmin.birthday,
+            token: generateToken(newAdmin._id)
             })
         res.status(400)
         throw new Error("Invalid submition");
@@ -80,7 +80,7 @@ const signInAdmins = asyncHandler(async(req, res) => {
             res.json({
             _id: admin.id,
             email: admin.email,
-            token: generateToken
+            token: generateToken(admin._id)
         })
 });
 
@@ -102,16 +102,25 @@ const updateAdmin = asyncHandler(async(req, res) => {
             res.status(200).json("Updated succesfully ")
         }
         else{
-            res.send("Invaid user !")
-        }
+            res.send("Invaid user !");
+        };
 });
 
 //JWT token ..............................................
 const generateToken = (id) =>{
     return jwt.sign({id}, process.env.JWT_SECRET, {
         expiresIn: '30d',
-    })
+    });
  };
+
+//  {
+//     "firstName" : "uzum",
+//     "lastName": "naruto",
+//     "email": "naruto@gmail.com",
+//     "password": "12345",
+//     "birthday": "30/12/1994"
+// }
+
 
 
 module.exports = {

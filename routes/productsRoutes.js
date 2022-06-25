@@ -7,8 +7,12 @@ const { getProduct,
         postProduct,
         deleteProduct } = require("../controllers/productAction");
       
-router.route('/').get(getProduct).post(postProduct);
-router.route('/:id').delete(deleteProduct).put(updateProduct);
+
+router.route('/', getProduct);
+router.post('/', postProduct);
+router.get('/:id', deleteProduct);
+router.put('/:id', updateProduct);
+
 
 
 
