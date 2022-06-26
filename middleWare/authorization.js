@@ -17,7 +17,7 @@ const auth = asyncHandler(async( req, res, next) => {
 
 
             //get admin from the token....................
-            req.admin = await Admin.findById(decoded.id).select('-password');
+            req.admin = await Admin.findById(decoded.id).select('password');
     console.log('this is  req ', req.admin);
 
         next();

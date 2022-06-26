@@ -12,20 +12,14 @@ const getAdmins = async (req, res) => {
 
 //we are getting a particular admin.................................
 const getAdminById = asyncHandler(async(req, res) => {
-    const {_id, firstName, lastName, email} = await Admin.findById();
+    const {_id, firstName, lastName, email} = await Admin.findById(req.admin.id);
     res.json({
         id: _id,
         firstName: firstName,
         lastName: lastName,
         email: email
     })
-    // const { id } = req.params;
-    // let admin = await Admin.find({_id : id});
-    //     if(id){
-    //         res.send(admin).status(200);
-    //         }
-    //         else res.send("No record found");
-        });
+  });
 /**
  * Admin registration function...................................
  */
@@ -46,25 +40,28 @@ const registerAdmins = asyncHandler(async(req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
- //Here we are creating a new admin in absence of the admin email already registered and including the model.
-        const newAdmin = new Admin({
+ //Here we are creating a new admin 
+        const admin = await Admin.create({
             firstName,
             lastName,
             email,
             password: hashedPassword,
             birthday
         });
-        await newAdmin.save();
-        res.status(200).json({
-            _id: newAdmin.id,
-            firstName: newAdmin.firstName,
-            lastName: newAdmin.lastName,
-            email: newAdmin.email,
-            birthday: newAdmin.birthday,
-            token: generateToken(newAdmin._id)
+//checking if the admin was created successfully and returning the admin information.
+        if(admin){
+            res.status(201).json({
+                _id: admin.id,
+                firstName: admin.firstName,
+                lastName: admin.lastName,
+                email: admin.email,
+                birthday: admin.birthday,
+                token: generateToken(admin._id)
             })
-        res.status(400)
-        throw new Error("Invalid submition");
+        }else{
+            res.status(400)
+                throw new Error("Invalid Admin Data")
+        };
 });
 
 //login fuction ............................................
@@ -125,13 +122,6 @@ const generateToken = (id) =>{
     });
  };
 
-//  {
-//     "firstName" : "uzum",
-//     "lastName": "naruto",
-//     "email": "naruto@gmail.com",
-//     "password": "12345",
-//     "birthday": "30/12/1994"
-// }
 
 
 
