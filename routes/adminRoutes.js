@@ -8,12 +8,12 @@ const { getAdmins,
         updateAdmin, 
         signInAdmins} = require('../controllers/adminActions');
 
-const { protect } = require('../middleWare/authorization')
+const { auth } = require('../middleWare/authorization')
 
-router.get('/', protect, getAdmins);
-router.delete('/:id', deleteAdmin);
+router.get('/', auth, getAdmins);
+router.delete('/:id' , deleteAdmin);
 router.put('/:id', updateAdmin);
-router.get('/:id', getAdminById);
+router.get('/:id', auth, getAdminById);
 router.post('/register', registerAdmins);
 router.post('/signin', signInAdmins);
 

@@ -12,12 +12,19 @@ const getAdmins = async (req, res) => {
 
 //we are getting a particular admin.................................
 const getAdminById = asyncHandler(async(req, res) => {
-    const { id } = req.params;
-    let admin = await Admin.find({_id : id});
-        if(id){
-            res.send(admin).status(200);
-            }
-            else res.send("No record found");  
+    const {_id, firstName, lastName, email} = await Admin.findById();
+    res.json({
+        id: _id,
+        firstName: firstName,
+        lastName: lastName,
+        email: email
+    })
+    // const { id } = req.params;
+    // let admin = await Admin.find({_id : id});
+    //     if(id){
+    //         res.send(admin).status(200);
+    //         }
+    //         else res.send("No record found");
         });
 /**
  * Admin registration function...................................

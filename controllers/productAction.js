@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
-const { findById } = require('../models/productsmodels');
 const Product = require('../models/productsmodels');
+
 
 // @desc  Get products
 // @routes GET /products
@@ -11,7 +11,7 @@ const getProduct = asyncHandler(async(req, res) => {
 });
 
 // @desc  Update products
-// @routes PUT /products/:id
+// @routes PUT /products/:id 
 // @access public
 const updateProduct = asyncHandler(async(req, res) => {
     const product = await Product.findById(req.params.id);
@@ -29,12 +29,14 @@ const updateProduct = asyncHandler(async(req, res) => {
 // @routes POST /products
 // @access public
 const postProduct = asyncHandler(async(req, res) => {
-    const { text } = req.body;
-    if(!text){
+    if(!req.body.text){
         res.status(400)
         throw new Error('Please select a product');
     }
-    const product = await Product.create({text});
+    const product = await Product.create({
+        text: req.body.text,
+    });
+
     res.status(200).json(product);
 });
 
