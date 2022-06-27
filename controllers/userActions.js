@@ -55,18 +55,18 @@ const registerUsers =  asyncHandler(async(req, res) =>{
         const hashedPassword = await bcrypt.hash(password, salt);
 
         //creating as new user... with the value each user should have or submit.....
-        const newUser = new User({ 
+        const user = await  User.create({ 
             name, 
             email, 
             password: hashedPassword
         });
-        await newUser.save();
+            if(user){
                 res.status(201).json({
-                _id: newUser.id,
-                name: newUser.name,
-                email: newUser.email,
-                token: generateToken(newUser._id),
-         })     
+                _id: user.id,
+                name: user.name,
+                email: user.email,
+             })
+        }  
 });
 
 /**
@@ -94,7 +94,6 @@ const registerUsers =  asyncHandler(async(req, res) =>{
             res.json({
                 _id: user.id, 
                 email: user.email,
-                token: generateToken(user._id)
              });
 
 });
@@ -127,24 +126,18 @@ const updateUsers = asyncHandler(async(req, res) =>{
         if(!user){
             res.status(404);
             throw new Error(" No User Found ! ")
-     }
+        }
             user.name = name || user.name;
             user.email = email || user.email;
             user.password = password || user.password;
             
             await user.save()
-            res.send(user)
-
-   
+            res.send(user);
     
 });
 
 //Jwt token generator..........
-const generateToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET, {
-        expiresIn: '30d',
-    });
-};
+
 
 module.exports = {
     getUsers,

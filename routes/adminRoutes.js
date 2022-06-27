@@ -1,12 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAdmins, 
-        getAdminById, 
-        registerAdmins,
-        deleteAdmin, 
-        updateAdmin, 
-        signInAdmins} = require('../controllers/adminActions');
+const { getAdmins, getAdminById, registerAdmins, deleteAdmin, updateAdmin, signInAdmins} = require('../controllers/adminActions');
 
 const { auth } = require('../middleWare/authorization')
 

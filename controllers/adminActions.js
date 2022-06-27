@@ -18,7 +18,7 @@ const getAdminById = asyncHandler(async(req, res) => {
         firstName: firstName,
         lastName: lastName,
         email: email
-    })
+    });
   });
 /**
  * Admin registration function...................................
@@ -31,36 +31,36 @@ const registerAdmins = asyncHandler(async(req, res) => {
         };
 
  //Checking if the admin with that email already exist
-        const adminExist = await Admin.findOne({email});
-            if(adminExist){
-                res.status(400)
-                throw new Error("Admin with this email already exist");
+    const adminExist = await Admin.findOne({email});
+        if(adminExist){
+            res.status(400)
+            throw new Error("Admin with this email already exist");
             }
 //hashing of the password.
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
  //Here we are creating a new admin 
-        const admin = await Admin.create({
-            firstName,
-            lastName,
-            email,
-            password: hashedPassword,
-            birthday
-        });
+    const admin = await Admin.create({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        birthday
+    });
 //checking if the admin was created successfully and returning the admin information.
         if(admin){
             res.status(201).json({
-                _id: admin.id,
-                firstName: admin.firstName,
-                lastName: admin.lastName,
-                email: admin.email,
-                birthday: admin.birthday,
-                token: generateToken(admin._id)
-            })
+            _id: admin.id,
+            firstName: admin.firstName,
+            lastName: admin.lastName,
+            email: admin.email,
+            birthday: admin.birthday,
+            token: generateToken(admin.id)
+        })
         }else{
             res.status(400)
-                throw new Error("Invalid Admin Data")
+                throw new Error("Invalid Admin Data");
         };
 });
 
@@ -84,7 +84,7 @@ const signInAdmins = asyncHandler(async(req, res) => {
             res.json({
             _id: admin.id,
             email: admin.email,
-            token: generateToken(admin._id)
+            token: generateToken(admin.id)
         })
 });
 

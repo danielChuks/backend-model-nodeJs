@@ -9,17 +9,12 @@ const auth = asyncHandler(async( req, res, next) => {
         try {
             //getting the token............................
             token = req.headers.authorization.split(' ')[1];
-    console.log('this is token', token)
 
             //Verifying the token ........................
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('this is decoded', decoded)
 
-
-            //get admin from the token....................
-            req.admin = await Admin.findById(decoded.id).select('password');
-    console.log('this is  req ', req.admin);
-
+            //get admin or user from the token....................
+            req.admin = await Admin.findById(decoded.id).select('-password');
         next();
         } catch (error) {
             console.log(error);

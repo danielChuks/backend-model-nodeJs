@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const productSchema = mongoose.Schema(
 
     {
-        //we are linking users to products to know which user picks which products
+        //we are linking users and admin to products to know which user picks which products
         user: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
