@@ -10,7 +10,7 @@ router.delete('/:id' , deleteAdmin);
 router.put('/:id', updateAdmin);
 router.get('/:id', auth, getAdminById);
 router.post('/register', registerAdmins);
-router.post('/signin', signInAdmins);
+router.post('/signin', auth, signInAdmins);
 
 
 

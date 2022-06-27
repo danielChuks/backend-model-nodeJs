@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 
 
+
 //user route controller functions
 /**
  * 
@@ -21,14 +22,13 @@ const getUsers = asyncHandler(async(req, res) => {
  * @param {*} res //we  respond the user if the id passed in by the user matches the id in the database.
  */
 const getUsersById = asyncHandler(async(req, res) => {
-        const { id } = req.params
-        let user = await User.find({_id : id});
-            if(id){
-                res.send(user).status(200);
-    }
-            else{
-                res.send('No user exist');
-    } 
+        const { _id, name, email } = await User.findById(req.user._id);
+        console.log(req.user._id)
+        res.json({
+            id: _id,
+            name: name,
+            email: email,
+        })
 });
 /**
  * 
@@ -65,6 +65,7 @@ const registerUsers =  asyncHandler(async(req, res) =>{
                 _id: user.id,
                 name: user.name,
                 email: user.email,
+                token: generatToken(user.id),
              })
         }  
 });
@@ -94,8 +95,8 @@ const registerUsers =  asyncHandler(async(req, res) =>{
             res.json({
                 _id: user.id, 
                 email: user.email,
+                token: generatToken(user.id),
              });
-
 });
 
 /**
@@ -137,7 +138,11 @@ const updateUsers = asyncHandler(async(req, res) =>{
 });
 
 //Jwt token generator..........
-
+const generatToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    })
+}
 
 module.exports = {
     getUsers,

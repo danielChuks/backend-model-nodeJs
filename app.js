@@ -18,7 +18,7 @@ con();
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/usersRoutes');
 const adminRouter = require('./routes/adminRoutes');
-const productsRoutes = require("./routes/productsRoutes");
+const postRoutes = require("./routes/postRoutes");
 
 //middleware function calling .....................
 const app = express();
@@ -32,7 +32,7 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
-app.use('/products', productsRoutes);
+app.use('/post', postRoutes);
 
 // port function....................................
 app.listen(PORT, () => {

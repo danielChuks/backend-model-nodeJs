@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const productSchema = mongoose.Schema(
+const postSchema = mongoose.Schema(
 
     {
         //we are linking users and admin to products to know which user picks which products
@@ -25,4 +25,4 @@ const productSchema = mongoose.Schema(
  
 
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model("Post", postSchema);
